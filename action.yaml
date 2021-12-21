@@ -46,24 +46,24 @@ runs:
         extends: ${{ inputs.release-config }}
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
-    - if: steps.release.outputs.new-release-published == 'true'
+    - if: steps.release.outputs.new_release_published == 'true'
       name: Checkout helm chart
       uses: actions/checkout@v2
       with:
         repository: ${{ inputs.helm-repo }}
         token: ${{ inputs.token }}
         ref: ${{ inputs.helm-repo-branch }}
-    - if: steps.release.outputs.new-release-published == 'true'
+    - if: steps.release.outputs.new_release_published == 'true'
       name: Update appVersion
       shell: bash
       run: |
-        sed -i "0,/appVersion:.*/s//appVersion: \"${{ steps.release.outputs.new-release-version }}\"/g" ${{ inputs.path-to-chart }}/Chart.yaml
-    - if: steps.release.outputs.new-release-published == 'true'
+        sed -i "0,/appVersion:.*/s//appVersion: \"${{ steps.release.outputs.new_release_version }}\"/g" ${{ inputs.path-to-chart }}/Chart.yaml
+    - if: steps.release.outputs.new_release_published == 'true'
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ inputs.token }}
         title: ${{ github.event.pull_request.title }}
         commit-message: '${{ github.event.pull_request.title }}\n\n${{ github.event.pull_request.body }}'
-        branch: '${{ inputs.branch-prefix }}${{ steps.release.outputs.new-release-version }}'
+        branch: '${{ inputs.branch-prefix }}${{ steps.release.outputs.new_release_version }}'
         delete-branch: ${{ inputs.delete-branch }}
         labels: ${{ inputs.labels }}
